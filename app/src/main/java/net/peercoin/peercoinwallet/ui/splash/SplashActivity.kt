@@ -1,10 +1,11 @@
-package net.peercoin.peercoinwallet
+package net.peercoin.peercoinwallet.ui.splash
 
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import net.peercoin.peercoinwallet.R
 import net.peercoin.peercoinwallet.ui.login.LoginActivity
 
 class SplashActivity : AppCompatActivity() {
@@ -25,9 +26,13 @@ class SplashActivity : AppCompatActivity() {
 
         llRegister.y = 200f
         //fade out logo
-        ivLogo.animate().alpha(0.0f).duration = 700
 
         val handler = Handler()
+
+        handler.postDelayed({
+            ivLogo.animate().alpha(0.0f).duration = 400
+        }, 400)
+
         handler.postDelayed({
             //Delayed animation to new height
             val newHeight = ivLogo.y - 100f
@@ -37,7 +42,7 @@ class SplashActivity : AppCompatActivity() {
                     .withEndAction { ivLogoText.y = newHeight }
 
             llRegister.animate().translationY(0f).alpha(1f).duration = 400
-        }, 850)
+        }, 800)
     }
 
 }
