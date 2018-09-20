@@ -39,13 +39,14 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="120dp" />
 
-        <EditText
+        <net.peercoin.peercoinwallet.ui.helper.EditTextKeyEvent
             android:id="@+id/etPin"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_gravity="bottom"
             android:layout_margin="10dp"
             android:focusableInTouchMode="true"
+            android:imeOptions="flagNoEnterAction|flagNoAccessoryAction"
             android:inputType="numberPassword"
             android:maxLength="6" />
 
@@ -88,7 +89,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="64dp"
+            android:layout_marginTop="48dp"
             android:alpha="0"
             android:text="@string/pin_success_set"
             android:textSize="20sp" />

@@ -14,10 +14,10 @@ import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_pin.*
 import net.peercoin.peercoinwallet.R
+import net.peercoin.peercoinwallet.ui.helper.EditTextKeyEvent
 import net.peercoin.peercoinwallet.ui.login.LoginActivity
 
 
@@ -30,6 +30,10 @@ class PinFragment : Fragment() {
         val ENTER_PIN = 32
         @JvmStatic
         val CONFIRM_PIN = 64
+        @JvmStatic
+        val COMPLETED = 128
+        @JvmStatic
+        val TAG = PinFragment::class.java.simpleName
     }
 
     private lateinit var password: String
@@ -100,6 +104,7 @@ class PinFragment : Fragment() {
                         if (password == pass) {
                             (activity as LoginActivity).registerSuccessful()
                             toggleLayoutChanges()
+                            type = COMPLETED
                         } else {
                             type = ENTER_PIN
                             val text = activity?.resources?.getText(R.string.pin_message_1)
@@ -110,6 +115,14 @@ class PinFragment : Fragment() {
                 }
             }
         })
+
+        val listener = object : EditTextKeyEvent.KeyboardListener {
+            override fun backPressed() {
+                //Check if keyboard should be collapsible
+                (activity as LoginActivity).onBackPressed()
+            }
+        }
+        etPin.setOnKeyboardListener(listener)
     }
 
     fun toggleLayoutChanges() {
@@ -119,9 +132,9 @@ class PinFragment : Fragment() {
         rvPinIndicator.visibility = View.INVISIBLE
         llCautionMessage.visibility = View.INVISIBLE
 
-        ivDone.y = 800f
+        ivDone.y = 1000f
         ivDone.visibility = View.VISIBLE
-        ivDone.animate().translationY(-40f).duration = 650
+        ivDone.animate().translationY(-70f).duration = 500
         Handler().postDelayed({
             tvSuccessMessage.animate().alpha(1f).duration = 400
         }, 600L)
