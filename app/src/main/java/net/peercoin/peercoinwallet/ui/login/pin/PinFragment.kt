@@ -17,7 +17,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_pin.*
 import net.peercoin.peercoinwallet.R
-import net.peercoin.peercoinwallet.ui.helper.EditTextKeyEvent
+import net.peercoin.peercoinwallet.helper.EditTextKeyEvent
 import net.peercoin.peercoinwallet.ui.login.LoginActivity
 
 

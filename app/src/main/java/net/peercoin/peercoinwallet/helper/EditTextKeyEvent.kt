@@ -1,10 +1,10 @@
-package net.peercoin.peercoinwallet.ui.helper
+package net.peercoin.peercoinwallet.helper
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.KeyEvent
 import android.widget.EditText
-import net.peercoin.peercoinwallet.ui.helper.EditTextKeyEvent.KeyboardListener
+import net.peercoin.peercoinwallet.helper.EditTextKeyEvent.KeyboardListener
 
 
 

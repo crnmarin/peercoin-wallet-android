@@ -45,7 +45,7 @@
         <com.google.android.material.button.MaterialButton
             android:layout_width="match_parent"
             android:id="@+id/btnCreate"
-            android:layout_height="56dp"
+            android:layout_height="@dimen/button_height"
             android:text="@string/create_new_wallet"
             android:textColor="@color/colorPrimary"
             android:textSize="16sp"
@@ -54,7 +54,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="@dimen/button_height"
             android:id="@+id/btnRecover"
             android:layout_marginTop="6dp"
             android:layout_marginBottom="4dp"

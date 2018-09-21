@@ -1,8 +1,12 @@
 package net.peercoin.peercoinwallet.ui.splash
 
+import android.app.ActivityOptions
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.transition.Explode
+import android.view.Window
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import net.peercoin.peercoinwallet.R
@@ -14,12 +18,20 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setAnimations()
-        btnCreate.setOnClickListener({ openCreateWallet() })
+        btnCreate.setOnClickListener { openCreateWallet() }
+
     }
 
     private fun openCreateWallet() {
         intent = Intent(this, LoginActivity::class.java)
-        startActivity(intent)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // Apply activity transition
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+        } else {
+            // Swap without transition
+            startActivity(intent)
+        }
     }
 
     fun setAnimations() {

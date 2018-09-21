@@ -39,7 +39,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="120dp" />
 
-        <net.peercoin.peercoinwallet.ui.helper.EditTextKeyEvent
+        <net.peercoin.peercoinwallet.helper.EditTextKeyEvent
             android:id="@+id/etPin"
             android:layout_width="0dp"
             android:layout_height="0dp"

@@ -11,4 +11,17 @@
     <string name="pin_message_3">Repeat PIN to confirm it!</string>
     <string name="caution">Caution!</string>
     <string name="pin_success_set">PIN is set!</string>
+    <string name="paper_key_intro1">Paper key is the only way to restore your Peercoin Wallet if you lose, corrupt or upgrade your phone.</string>
+    <string name="paper_key_intro2">We will show you list of words to write down on piece of paper and keep safe.</string>
+    <string name="write_paper_key">Write down paper key</string>
+    <string name="paper_key">Paper key</string>
+    <string name="step_1">Step 1</string>
+    <string name="step_1_message">Write down each word in exact order and store it in a safe place.</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="finish">Finish</string>
+    <string name="step_2">Step 2</string>
+    <string name="step_2_message">To make sure everything was written down correctly, please enter the following words from your paper key.</string>
+    <string name="submit">Submit</string>
+
 </resources>
