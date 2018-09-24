@@ -59,9 +59,9 @@ class LoginActivity : AppCompatActivity() {
                 .commit()
     }
 
-    fun finishPaperKey() {
+    fun finishPaperKey(randomWords: List<String>) {
         supportFragmentManager.beginTransaction()
-                .replace(R.id.flContent, PaperKeyStepTwoFragment.newInstance(), PaperKeyStepTwoFragment.TAG)
+                .replace(R.id.flContent, PaperKeyStepTwoFragment.newInstance(randomWords), PaperKeyStepTwoFragment.TAG)
                 .addToBackStack(null)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .commit()

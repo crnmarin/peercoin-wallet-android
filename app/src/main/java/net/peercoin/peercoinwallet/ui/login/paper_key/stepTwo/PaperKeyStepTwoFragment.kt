@@ -7,14 +7,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import net.peercoin.peercoinwallet.R
-import net.peercoin.peercoinwallet.ui.login.paper_key.stepOne.PaperKeyStepOneViewModel
 
 class PaperKeyStepTwoFragment : Fragment() {
 
     companion object {
         val TAG: String? = PaperKeyStepTwoFragment::class.java.simpleName
 
-        fun newInstance() = PaperKeyStepTwoFragment()
+        fun newInstance(randomWords: List<String>) = PaperKeyStepTwoFragment()
     }
 
     private lateinit var viewModel: PaperKeyStepTwoViewModel

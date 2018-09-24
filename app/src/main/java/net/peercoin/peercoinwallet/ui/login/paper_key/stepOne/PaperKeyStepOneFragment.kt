@@ -10,12 +10,14 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
 import kotlinx.android.synthetic.main.paper_key_step_one_fragment.*
 import net.peercoin.peercoinwallet.R
+import net.peercoin.peercoinwallet.helper.CustomViewModelFactory
 import net.peercoin.peercoinwallet.ui.login.LoginActivity
 
 class PaperKeyStepOneFragment : Fragment() {
 
     companion object {
         val TAG: String = PaperKeyStepOneFragment::class.java.simpleName
+        val wordsToAnswerSize: Int = 2
         fun newInstance() = PaperKeyStepOneFragment()
     }
 
@@ -29,7 +31,7 @@ class PaperKeyStepOneFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(PaperKeyStepOneViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, CustomViewModelFactory(wordsToAnswerSize)).get(PaperKeyStepOneViewModel::class.java)
         setupPager()
         addListeners()
     }
@@ -40,10 +42,7 @@ class PaperKeyStepOneFragment : Fragment() {
         }
         btnNext.setOnClickListener {
             if (viewPager.currentItem == viewModel.list.size - 1) {
-                //Finish - to step 2
-                viewPager.removeOnPageChangeListener(listener)
-                (activity as LoginActivity).finishPaperKey()
-
+                (activity as LoginActivity).finishPaperKey(viewModel.getRandomWords())
             } else
                 viewPager.currentItem = viewPager.currentItem + 1
         }
