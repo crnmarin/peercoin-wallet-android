@@ -23,5 +23,6 @@
     <string name="step_2">Step 2</string>
     <string name="step_2_message">To make sure everything was written down correctly, please enter the following words from your paper key.</string>
     <string name="submit">Submit</string>
+    <string name="word">Word</string>
 
 </resources>

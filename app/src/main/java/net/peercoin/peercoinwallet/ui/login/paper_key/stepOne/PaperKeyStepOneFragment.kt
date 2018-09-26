@@ -17,10 +17,10 @@ class PaperKeyStepOneFragment : Fragment() {
 
     companion object {
         val TAG: String = PaperKeyStepOneFragment::class.java.simpleName
-        val wordsToAnswerSize: Int = 2
         fun newInstance() = PaperKeyStepOneFragment()
     }
 
+    private var WORDS_SIZE: Int = 2
     private lateinit var pagerAdapter: PaperKeyPagerAdapter
     private lateinit var viewModel: PaperKeyStepOneViewModel
 
@@ -31,9 +31,10 @@ class PaperKeyStepOneFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this, CustomViewModelFactory(wordsToAnswerSize)).get(PaperKeyStepOneViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, CustomViewModelFactory(WORDS_SIZE)).get(PaperKeyStepOneViewModel::class.java)
         setupPager()
         addListeners()
+        changePagerDesign(viewPager!!.currentItem)
     }
 
     fun addListeners() {
@@ -43,8 +44,9 @@ class PaperKeyStepOneFragment : Fragment() {
         btnNext.setOnClickListener {
             if (viewPager.currentItem == viewModel.list.size - 1) {
                 (activity as LoginActivity).finishPaperKey(viewModel.getRandomWords())
-            } else
+            } else {
                 viewPager.currentItem = viewPager.currentItem + 1
+            }
         }
     }
 
@@ -54,33 +56,7 @@ class PaperKeyStepOneFragment : Fragment() {
         }
 
         override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-            when (position) {
-                0 -> {
-                    val colorStateList = ContextCompat.getColorStateList((activity as LoginActivity), R.color.color_grey)
-                    btnPrevious.backgroundTintList = colorStateList
-                    btnPrevious.isClickable = false
-                }
-                1 -> {
-                    val colorStateList = ContextCompat.getColorStateList(
-                            (activity as LoginActivity), R.color.color_primary_dark)
-                    btnPrevious.backgroundTintList = colorStateList
-                    btnPrevious.isClickable = true
-                }
-                viewModel.list.size - 1 -> {
-                    val colorStateList = ContextCompat.getColorStateList(
-                            (activity as LoginActivity), R.color.color_primary_accent)
-                    btnNext.backgroundTintList = colorStateList
-                    btnNext.text = (activity as LoginActivity).resources.getText(R.string.finish)
-
-                }
-                viewModel.list.size - 2 -> {
-                    val colorStateList = ContextCompat.getColorStateList(
-                            (activity as LoginActivity), R.color.color_primary_dark)
-                    btnNext.backgroundTintList = colorStateList
-                    btnNext.text = (activity as LoginActivity).resources.getText(R.string.next)
-                }
-
-            }
+            changePagerDesign(position)
         }
 
         override fun onPageSelected(position: Int) {
@@ -88,8 +64,42 @@ class PaperKeyStepOneFragment : Fragment() {
         }
     }
 
+    fun changePagerDesign(position: Int) {
+        when (position) {
+            0 -> {
+                val colorStateList = ContextCompat.getColorStateList((activity as LoginActivity), R.color.color_grey)
+                btnPrevious.backgroundTintList = colorStateList
+                btnPrevious.isClickable = false
+            }
+            1 -> {
+                setButtonDefaultColors()
+            }
+            viewModel.list.size - 2 -> {
+                setButtonDefaultColors()
+            }
+            viewModel.list.size - 1 -> {
+                setButtonDefaultColors()
+                val colorStateList = ContextCompat.getColorStateList(
+                        (activity as LoginActivity), R.color.color_primary_accent)
+                btnNext.backgroundTintList = colorStateList
+                btnNext.text = (activity as LoginActivity).resources.getText(R.string.finish)
+
+            }
+
+        }
+    }
+
+    fun setButtonDefaultColors() {
+        val colorStateList = ContextCompat.getColorStateList(
+                (activity as LoginActivity), R.color.color_primary_dark)
+        btnPrevious.backgroundTintList = colorStateList
+        btnPrevious.isClickable = true
+        btnNext.backgroundTintList = colorStateList
+        btnNext.text = (activity as LoginActivity).resources.getText(R.string.next)
+    }
+
     fun setupPager() {
-        pagerAdapter = PaperKeyPagerAdapter(viewModel.list, this!!.context!!)
+        pagerAdapter = PaperKeyPagerAdapter(viewModel.list, this.context!!)
         viewPager.adapter = pagerAdapter
 
         viewPager.addOnPageChangeListener(listener)
