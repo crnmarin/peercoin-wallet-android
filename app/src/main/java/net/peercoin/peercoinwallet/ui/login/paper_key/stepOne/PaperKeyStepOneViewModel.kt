@@ -10,9 +10,11 @@ class PaperKeyStepOneViewModel(private val neededWordsSize: Int) : ViewModel() {
         var counter = 0
 
         while (counter <= neededWordsSize) {
-            val randomNumber: Int = (1..list.size - 1).random()
-            if (!wordsMap.contains(randomNumber)) {
-                wordsMap[randomNumber] = list[randomNumber]
+            val randomNumber: Int = (0 until list.size).random()
+            val key = randomNumber + 1
+            if (!wordsMap.contains(key)) {
+                //Key is random number + 1 because we show words with indexing 1,2,3...,
+                wordsMap[key] = list[randomNumber] //list is indexing from 0...list.size
                 counter++
             }
         }

@@ -10,6 +10,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
@@ -106,6 +107,7 @@ class PinFragment : Fragment() {
                             toggleLayoutChanges()
                             type = COMPLETED
                         } else {
+                            shakeForError()
                             type = ENTER_PIN
                             val text = activity?.resources?.getText(R.string.pin_message_1)
                             tsPin.setCurrentText(text)
@@ -123,6 +125,12 @@ class PinFragment : Fragment() {
             }
         }
         etPin.setOnKeyboardListener(listener)
+    }
+
+    //Add animation for wrong pin confirming
+    private fun shakeForError() {
+        val animation: Animation = AnimationUtils.loadAnimation(context, R.anim.shake)
+        rvPinIndicator.startAnimation(animation)
     }
 
     fun toggleLayoutChanges() {

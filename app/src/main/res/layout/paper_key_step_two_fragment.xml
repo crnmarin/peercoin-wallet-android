@@ -55,6 +55,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/button_height"
             android:layout_margin="16dp"
+            android:id="@+id/btnSubmit"
             android:text="@string/submit"
             android:layout_gravity="bottom"/>
 

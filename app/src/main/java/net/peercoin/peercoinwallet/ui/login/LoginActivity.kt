@@ -43,7 +43,7 @@ class LoginActivity : AppCompatActivity() {
             supportFragmentManager.beginTransaction()
                     .replace(R.id.flContent, PaperKeyIntroFragment.newInstance(), PaperKeyIntroFragment.TAG)
                     .addToBackStack(null)
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                     .commit()
 
             ivBack.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_close_black_24dp))
@@ -55,7 +55,7 @@ class LoginActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
                 .replace(R.id.flContent, PaperKeyStepOneFragment.newInstance(), PaperKeyStepOneFragment.TAG)
                 .addToBackStack(null)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .commit()
     }
 
@@ -63,7 +63,7 @@ class LoginActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
                 .replace(R.id.flContent, PaperKeyStepTwoFragment.newInstance(randomWords), PaperKeyStepTwoFragment.TAG)
                 .addToBackStack(null)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .commit()
     }
 }

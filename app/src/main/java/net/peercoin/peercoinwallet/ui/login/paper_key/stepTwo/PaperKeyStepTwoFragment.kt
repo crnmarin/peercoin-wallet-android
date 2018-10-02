@@ -1,5 +1,6 @@
 package net.peercoin.peercoinwallet.ui.login.paper_key.stepTwo
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.paper_key_step_two_fragment.*
 import net.peercoin.peercoinwallet.R
 
@@ -43,6 +43,13 @@ class PaperKeyStepTwoFragment : Fragment() {
         adapter = WordsAdapter(map)
         rvWords.layoutManager = LinearLayoutManager(context)
         rvWords.adapter = adapter
+        btnSubmit.setOnClickListener {
+            if (adapter.isCorrectFulfilled()) {
+                AlertDialog.Builder(activity).setTitle(getString(R.string.success)).setMessage("Great succeeded!").create().show()
+            } else {
+                AlertDialog.Builder(activity).setTitle(getString(R.string.incorrect_title)).setMessage(getString(R.string.incorrect_words_message)).create().show()
+            }
+        }
 
 
     }

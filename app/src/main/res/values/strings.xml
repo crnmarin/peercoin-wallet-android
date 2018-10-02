@@ -24,5 +24,8 @@
     <string name="step_2_message">To make sure everything was written down correctly, please enter the following words from your paper key.</string>
     <string name="submit">Submit</string>
     <string name="word">Word</string>
+    <string name="incorrect_title">Incorrect</string>
+    <string name="incorrect_words_message">One or more words you have entered are incorrect.</string>
+    <string name="success">Success</string>
 
 </resources>
