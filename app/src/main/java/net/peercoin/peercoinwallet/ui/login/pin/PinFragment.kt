@@ -21,7 +21,6 @@ import net.peercoin.peercoinwallet.R
 import net.peercoin.peercoinwallet.helper.EditTextKeyEvent
 import net.peercoin.peercoinwallet.ui.login.LoginActivity
 
-
 class PinFragment : Fragment() {
     companion object {
         fun newInstance() = PinFragment()
@@ -77,6 +76,10 @@ class PinFragment : Fragment() {
     }
 
     private fun setupEditText() {
+
+        val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+        imm!!.hideSoftInputFromWindow(etPin.getWindowToken(), 0)
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
 
         etPin.requestFocus()
         etPin.addTextChangedListener(object : TextWatcher {

@@ -21,14 +21,7 @@ class SplashActivity : AppCompatActivity() {
 
     private fun openCreateWallet() {
         intent = Intent(this, LoginActivity::class.java)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // Apply activity transition
-            startActivity(intent)
-        } else {
-            // Swap without transition
-            startActivity(intent)
-        }
+        startActivity(intent)
     }
 
     fun setAnimations() {

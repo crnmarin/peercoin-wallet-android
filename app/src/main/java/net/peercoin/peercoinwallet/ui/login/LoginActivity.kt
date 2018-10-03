@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentTransaction
 import kotlinx.android.synthetic.main.activity_login.*
 import net.peercoin.peercoinwallet.R
+import net.peercoin.peercoinwallet.ui.login.fingerprint.FingerDialogFragment
 import net.peercoin.peercoinwallet.ui.login.paper_key.intro.PaperKeyIntroFragment
 import net.peercoin.peercoinwallet.ui.login.paper_key.stepOne.PaperKeyStepOneFragment
 import net.peercoin.peercoinwallet.ui.login.paper_key.stepTwo.PaperKeyStepTwoFragment
@@ -17,11 +19,14 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_login)
+
         supportFragmentManager.beginTransaction()
                 .replace(R.id.flContent, PinFragment.newInstance(), PinFragment.TAG)
                 .addToBackStack(null)
                 .commit()
+
         ivBack.setOnClickListener { finish() }
     }
 
@@ -46,12 +51,26 @@ class LoginActivity : AppCompatActivity() {
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                     .commit()
 
-            ivBack.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_close_black_24dp))
+            ivBack.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_close_accent_24dp))
             tvHeaderTitle.text = getString(R.string.paper_key)
         }, 2000L)
     }
 
+    private val fingerDialogFragment: FingerDialogFragment
+        get() {
+            val fingerDialog = FingerDialogFragment.newInstance()
+            return fingerDialog
+        }
+
     fun writePaperKey() {
+        //Should be fingerprint authentication
+
+        val fingerDialog = fingerDialogFragment
+        fingerDialog.setStyle(DialogFragment.STYLE_NORMAL, R.style.dialog_theme)
+        fingerDialog.show(supportFragmentManager, FingerDialogFragment.TAG)
+    }
+
+    fun stepOnePaperKey() {
         supportFragmentManager.beginTransaction()
                 .replace(R.id.flContent, PaperKeyStepOneFragment.newInstance(), PaperKeyStepOneFragment.TAG)
                 .addToBackStack(null)
@@ -60,6 +79,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun finishPaperKey(randomWords: HashMap<Int, String>) {
+        //Step two of authentication
         supportFragmentManager.beginTransaction()
                 .replace(R.id.flContent, PaperKeyStepTwoFragment.newInstance(randomWords), PaperKeyStepTwoFragment.TAG)
                 .addToBackStack(null)
