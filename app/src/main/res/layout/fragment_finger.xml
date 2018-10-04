@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/finger_background"
+    tools:context=".ui.login.fingerprint.FingerDialogFragment">
+
+    <LinearLayout
+        android:id="@+id/llIntroMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="36dp"
+        android:alpha="0"
+        android:background="@drawable/intro_finger_background"
+        android:orientation="vertical"
+        android:scaleX="1.15"
+        android:scaleY="1.15"
+        tools:alpha=".3"
+        tools:scaleX="1"
+        tools:scaleY="1">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:layout_marginTop="8dp"
+            app:srcCompat="@drawable/ic_fingerprint_pink_24dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="4dp"
+            android:gravity="center"
+            android:paddingLeft="80dp"
+            android:paddingRight="80dp"
+            android:text="@string/touch_id_message"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/unlock_message"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="4dp"
+            android:background="@color/greyDarker" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="@string/cancel"
+            android:textColor="@color/blueNeutral"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/flFingerContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0"
+        android:visibility="gone"
+        tools:alpha="1"
+        tools:visibility="visible">
+
+        <ImageView
+            android:id="@+id/ivClose"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_margin="8dp"
+            app:srcCompat="@drawable/ic_close_accent_24dp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="4dp"
+                android:text="@string/enter_pin"
+                android:textColor="@color/greyTwo"
+                android:textSize="20sp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvPin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_gravity="bottom|right"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="8dp"
+            android:drawableRight="@drawable/ic_fingerprint_accent"
+            android:drawablePadding="12dp"
+            android:gravity="center"
+            android:text="@string/use_touch_id"
+            android:textColor="@color/greyTwo"
+            android:textSize="16sp" />
+
+
+    </FrameLayout>
+
+    <net.peercoin.peercoinwallet.helper.EditTextKeyEvent
+        android:id="@+id/etPinConfirm"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_gravity="bottom"
+        android:layout_margin="10dp"
+        android:focusableInTouchMode="true"
+        android:imeOptions="flagNoEnterAction"
+        android:inputType="numberPassword"
+        android:maxLength="6" />
+
+</FrameLayout>

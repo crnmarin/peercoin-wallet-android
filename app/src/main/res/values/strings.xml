@@ -27,5 +27,10 @@
     <string name="incorrect_title">Incorrect</string>
     <string name="incorrect_words_message">One or more words you have entered are incorrect.</string>
     <string name="success">Success</string>
+    <string name="touch_id_message">Touch ID for \"Peercoin wallet\"</string>
+    <string name="unlock_message">Unlock wallet with your finger.</string>
+    <string name="cancel">Cancel</string>
+    <string name="enter_pin">Enter PIN</string>
+    <string name="use_touch_id">or use Touch ID</string>
 
 </resources>
