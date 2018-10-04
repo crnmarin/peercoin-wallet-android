@@ -2,11 +2,14 @@ package net.peercoin.peercoinwallet.ui.login
 
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentTransaction
 import kotlinx.android.synthetic.main.activity_login.*
 import net.peercoin.peercoinwallet.R
+import net.peercoin.peercoinwallet.service.pin.DeCryptor
+import net.peercoin.peercoinwallet.service.pin.EnCryptor
 import net.peercoin.peercoinwallet.ui.login.paper_key.intro.PaperKeyIntroFragment
 import net.peercoin.peercoinwallet.ui.login.paper_key.stepOne.PaperKeyStepOneFragment
 import net.peercoin.peercoinwallet.ui.login.paper_key.stepTwo.PaperKeyStepTwoFragment
@@ -33,8 +36,13 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    fun registerSuccessful() {
+    fun registerSuccessful(pass: String) {
         //Do PIN storage
+        val encryptor = EnCryptor()
+        val decryptor = DeCryptor()
+
+        encryptText(encryptor, pass)
+        decryptText(decryptor,encryptor)
 
         Handler().postDelayed({
             if (supportFragmentManager.backStackEntryCount > 0)
@@ -66,4 +74,17 @@ class LoginActivity : AppCompatActivity() {
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .commit()
     }
+
+    private fun encryptText(encryptor: EnCryptor, pass: String) {
+        val encryptedText: ByteArray = encryptor.encryptText("AndroidKeyStore", pass)
+        Log.d("EncryptComplete", encryptedText.toString())
+
+    }
+
+    private fun decryptText(decryptor: DeCryptor, encryptor: EnCryptor) {
+        val decryptedText: String = decryptor.decryptData("AndroidKeyStore", encryptor.getEncryption(),
+                encryptor.getIv())
+        Log.d("DecryptComplete", decryptedText)
+    }
+
 }
