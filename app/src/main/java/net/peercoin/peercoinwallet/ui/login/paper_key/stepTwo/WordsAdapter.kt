@@ -1,7 +1,7 @@
 package net.peercoin.peercoinwallet.ui.login.paper_key.stepTwo
 
-import android.text.Editable
-import android.text.TextWatcher
+import android.os.Build
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +10,7 @@ import kotlinx.android.synthetic.main.item_word.view.*
 import net.peercoin.peercoinwallet.R
 
 class WordsAdapter(private val wordsMap: HashMap<Int, String>,
+                   private val listener: WordsAdapter.TouchListener,
                    private val keys: IntArray = wordsMap.keys.toIntArray(),
                    private val enteredWords: HashMap<Int, String> = HashMap<Int, String>(),
                    private val words: Array<String> = wordsMap.values.toTypedArray()) : RecyclerView.Adapter<WordsAdapter.ViewHolder>() {
@@ -23,23 +24,21 @@ class WordsAdapter(private val wordsMap: HashMap<Int, String>,
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val wordIndex = keys.get(position)
+        val wordIndex = keys[position]
         val wordString = holder.itemView.context.getString(R.string.word)
+
         holder.itemView.tilWord.hint = wordString.toLowerCase() + " #" + wordIndex.toString()
-        holder.itemView.etWord.addTextChangedListener(object : TextWatcher {
 
-            override fun afterTextChanged(s: Editable?) {
-                enteredWords[position] = "" + s
+        holder.itemView.etWord.setOnKeyListener(View.OnKeyListener { p0, keyCode, event ->
+            if (event != null && position == itemCount - 1) {
+                if (event.action == KeyEvent.ACTION_DOWN) {
+                    if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                        listener.removeFocusFromRv()
+                        return@OnKeyListener true
+                    }
+                }
             }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
-            }
-
+            false
         })
 
     }
@@ -56,4 +55,10 @@ class WordsAdapter(private val wordsMap: HashMap<Int, String>,
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+
+    interface TouchListener {
+        fun removeFocusFromRv()
+    }
+
+
 }

@@ -1,7 +1,6 @@
 package net.peercoin.peercoinwallet.ui.splash
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
@@ -15,8 +14,16 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setAnimations()
-        btnCreate.setOnClickListener { openCreateWallet() }
+        btnCreate.setOnClickListener {
+            openCreateWallet()
+            btnCreate.isClickable = false
+        }
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        btnCreate.isClickable = true
     }
 
     private fun openCreateWallet() {

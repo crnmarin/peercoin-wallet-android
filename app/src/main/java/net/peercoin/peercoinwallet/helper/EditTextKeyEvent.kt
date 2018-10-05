@@ -25,6 +25,16 @@ class EditTextKeyEvent : EditText {
         return super.dispatchKeyEventPreIme(event)
     }
 
+    override fun dispatchKeyEvent(event: KeyEvent?): Boolean {
+        if (event?.action == KeyEvent.ACTION_DOWN) {
+            if (event.keyCode == KeyEvent.KEYCODE_ENTER) {
+                listener?.enterPressed()
+                return super.dispatchKeyEvent(event)
+            }
+        }
+        return super.dispatchKeyEvent(event)
+    }
+
     fun setOnKeyboardListener(listener: KeyboardListener) {
         this.listener = listener
     }
@@ -33,6 +43,7 @@ class EditTextKeyEvent : EditText {
 
     interface KeyboardListener {
         fun backPressed()
+        fun enterPressed()
     }
 
 }

@@ -12,9 +12,10 @@
         app:hintTextAppearance="@style/MyAppearance">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etWord"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/etWord"
+            android:textSize="15sp"
             android:layout_gravity="center"
             android:inputType="text"
             android:maxLines="1"

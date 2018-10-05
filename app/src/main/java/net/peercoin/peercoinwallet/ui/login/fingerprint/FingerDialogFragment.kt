@@ -18,7 +18,6 @@ import kotlinx.android.synthetic.main.fragment_finger.*
 import net.peercoin.peercoinwallet.R
 import net.peercoin.peercoinwallet.helper.EditTextKeyEvent
 import net.peercoin.peercoinwallet.ui.login.LoginActivity
-import net.peercoin.peercoinwallet.ui.login.pin.PinAdapter
 import net.peercoin.peercoinwallet.ui.login.pin.PinFragment
 
 
@@ -55,10 +54,10 @@ class FingerDialogFragment : DialogFragment() {
     }
 
     fun replaceIntroWithPin() {
+
         Handler().postDelayed({
-            //replace the view with pin and other authentication
-            llIntroMessage.animate().alpha(0f).duration = 100
-        }, 2600)
+            llIntroMessage.animate().alpha(0f).duration = 300
+        }, 2000)
 
         Handler().postDelayed({
             val imm = etPinConfirm.context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
@@ -67,7 +66,7 @@ class FingerDialogFragment : DialogFragment() {
             flFingerContent.visibility = View.VISIBLE
             flFingerContent.animate().alpha(1f).duration = 500
             setupEditText()
-        }, 2700)
+        }, 2300)
 
     }
 
@@ -75,7 +74,7 @@ class FingerDialogFragment : DialogFragment() {
         Handler().postDelayed({
             llIntroMessage.animate().alpha(1f).duration = 125
             llIntroMessage.animate().scaleX(1f).scaleY(1f).duration = 250
-        }, 600)
+        }, 400)
     }
 
     private fun setupEditText() {
@@ -93,8 +92,7 @@ class FingerDialogFragment : DialogFragment() {
                 val pass = etPinConfirm.text.toString()
                 fingerPinAdapter.onTextChanged(pass.length)
                 if (pass.length == 6) {
-                    dismiss()
-                    (activity as LoginActivity).stepOnePaperKey()
+                    completeInput()
                 }
             }
         })
@@ -102,12 +100,26 @@ class FingerDialogFragment : DialogFragment() {
         etPinConfirm.isFocusableInTouchMode = true
 
         val listener = object : EditTextKeyEvent.KeyboardListener {
+            override fun enterPressed() {
+
+            }
+
             override fun backPressed() {
                 //Check if keyboard should be collapsible
-                (activity as LoginActivity).onBackPressed()
             }
         }
         etPinConfirm.setOnKeyboardListener(listener)
+    }
+
+    fun completeInput() {
+
+
+        Handler().postDelayed({
+            val imm = etPinConfirm.context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(etPinConfirm.windowToken, 0)
+            dismiss()
+            (activity as LoginActivity).stepOnePaperKey()
+        },300)
     }
 
 }

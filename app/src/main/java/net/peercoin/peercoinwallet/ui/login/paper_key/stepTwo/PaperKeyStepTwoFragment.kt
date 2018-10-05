@@ -1,15 +1,23 @@
 package net.peercoin.peercoinwallet.ui.login.paper_key.stepTwo
 
 import android.app.AlertDialog
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.view.FocusFinder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.android.synthetic.main.fragment_finger.*
 import kotlinx.android.synthetic.main.paper_key_step_two_fragment.*
 import net.peercoin.peercoinwallet.R
+
 
 class PaperKeyStepTwoFragment : Fragment() {
 
@@ -38,11 +46,7 @@ class PaperKeyStepTwoFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(PaperKeyStepTwoViewModel::class.java)
 
-        val args: Bundle = this.arguments!!
-        val map: HashMap<Int, String> = args.getSerializable(WORDS_KEY) as HashMap<Int, String>
-        adapter = WordsAdapter(map)
-        rvWords.layoutManager = LinearLayoutManager(context)
-        rvWords.adapter = adapter
+        setupRecyclerView()
         btnSubmit.setOnClickListener {
             if (adapter.isCorrectFulfilled()) {
                 AlertDialog.Builder(activity).setTitle(getString(R.string.success)).setMessage("Great succeeded!").create().show()
@@ -52,6 +56,28 @@ class PaperKeyStepTwoFragment : Fragment() {
         }
 
 
+    }
+
+    fun setupRecyclerView() {
+        val args: Bundle = this.arguments!!
+        val map: HashMap<Int, String> = args.getSerializable(WORDS_KEY) as HashMap<Int, String>
+        adapter = WordsAdapter(map, object : WordsAdapter.TouchListener {
+            override fun removeFocusFromRv() {
+                //TODO focus remain on edit text after input is over, it should be removed
+//                val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+//                imm.hideSoftInputFromWindow(btnSubmit.windowToken, 0)
+//                btnSubmit.isFocusableInTouchMode = true
+//                btnSubmit.requestFocus()
+//                Handler().postDelayed({
+//                    btnSubmit.isFocusableInTouchMode = false
+//                    btnSubmit.clearFocus()
+//                    rvWords.clearFocus()
+//                }, 50)
+
+            }
+        })
+        rvWords.layoutManager = LinearLayoutManager(context)
+        rvWords.adapter = adapter
     }
 
 }

@@ -7,4 +7,5 @@
     <color name="greyTwo">#DEDDDE</color>
     <color name="greyDarker">#AEACAE</color>
     <color name="blueNeutral">#0075FA</color>
+    <color name="transparent">#80000000</color>
 </resources>

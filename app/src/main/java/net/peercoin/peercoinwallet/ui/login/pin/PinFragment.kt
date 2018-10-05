@@ -76,10 +76,10 @@ class PinFragment : Fragment() {
     }
 
     private fun setupEditText() {
-
-        val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
-        imm!!.hideSoftInputFromWindow(etPin.getWindowToken(), 0)
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+//
+//        val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+//        imm!!.hideSoftInputFromWindow(etPin.getWindowToken(), 0)
+//        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
 
         etPin.requestFocus()
         etPin.addTextChangedListener(object : TextWatcher {
@@ -122,6 +122,10 @@ class PinFragment : Fragment() {
         })
 
         val listener = object : EditTextKeyEvent.KeyboardListener {
+            override fun enterPressed() {
+
+            }
+
             override fun backPressed() {
                 //Check if keyboard should be collapsible
                 (activity as LoginActivity).onBackPressed()
