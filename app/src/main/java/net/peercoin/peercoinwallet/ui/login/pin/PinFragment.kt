@@ -106,7 +106,7 @@ class PinFragment : Fragment() {
 
                     } else {
                         if (password == pass) {
-                            (activity as LoginActivity).registerSuccessful()
+                            (activity as LoginActivity).registerSuccessful(pass)
                             toggleLayoutChanges()
                             type = COMPLETED
                         } else {

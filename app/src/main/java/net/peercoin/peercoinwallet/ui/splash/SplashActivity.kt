@@ -3,6 +3,9 @@ package net.peercoin.peercoinwallet.ui.splash
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.transition.Explode
+import android.view.View
+import android.view.Window
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import net.peercoin.peercoinwallet.R
