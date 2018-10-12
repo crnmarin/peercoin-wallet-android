@@ -9,6 +9,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT
 import androidx.fragment.app.DialogFragment
@@ -30,6 +32,9 @@ class FingerDialogFragment : DialogFragment() {
 
     private lateinit var fingerPinAdapter: FingerPinAdapter
     private lateinit var viewModel: FingerDialogViewModel
+    private lateinit var introFadeRunnable: Runnable
+    private lateinit var screenShowRunnable: Runnable
+    private val handler = Handler()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -44,34 +49,39 @@ class FingerDialogFragment : DialogFragment() {
         showIntroMessage()
         replaceIntroWithPin()
         setupRecyclerView()
+        tvCancel.setOnClickListener {
+            handler.removeCallbacks(introFadeRunnable)
+            handler.removeCallbacks(screenShowRunnable)
+            dismiss()
+        }
     }
 
-    fun setupRecyclerView() {
+    private fun setupRecyclerView() {
         ivClose.setOnClickListener { activity!!.finish() }
         fingerPinAdapter = FingerPinAdapter(PinFragment.PIN_SIZE)
         rvPin.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         rvPin.adapter = fingerPinAdapter
     }
 
-    fun replaceIntroWithPin() {
 
-        Handler().postDelayed({
-            llIntroMessage.animate().alpha(0f).duration = 300
-        }, 2000)
+    private fun replaceIntroWithPin() {
 
-        Handler().postDelayed({
+        introFadeRunnable = Runnable { llIntroMessage.animate().alpha(0f).duration = 300 }
+        screenShowRunnable = Runnable {
             val imm = etPinConfirm.context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
             imm.showSoftInput(etPinConfirm, SHOW_IMPLICIT)
             dialog.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
             flFingerContent.visibility = View.VISIBLE
             flFingerContent.animate().alpha(1f).duration = 500
             setupEditText()
-        }, 2300)
+        }
 
+        handler.postDelayed(introFadeRunnable, 2000)
+        handler.postDelayed(screenShowRunnable, 2300)
     }
 
-    fun showIntroMessage() {
-        Handler().postDelayed({
+    private fun showIntroMessage() {
+        handler.postDelayed({
             llIntroMessage.animate().alpha(1f).duration = 125
             llIntroMessage.animate().scaleX(1f).scaleY(1f).duration = 250
         }, 400)
@@ -92,7 +102,12 @@ class FingerDialogFragment : DialogFragment() {
                 val pass = etPinConfirm.text.toString()
                 fingerPinAdapter.onTextChanged(pass.length)
                 if (pass.length == 6) {
-                    completeInput()
+                    if (pass == (activity as LoginActivity).getDecryptedText()) {
+                        completeInput()
+                    } else {
+                        shakeForError()
+                        resetAdapter()
+                    }
                 }
             }
         })
@@ -114,12 +129,24 @@ class FingerDialogFragment : DialogFragment() {
     fun completeInput() {
 
 
-        Handler().postDelayed({
+        handler.postDelayed({
             val imm = etPinConfirm.context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(etPinConfirm.windowToken, 0)
             dismiss()
             (activity as LoginActivity).stepOnePaperKey()
-        },300)
+        }, 300)
+    }
+
+    private fun shakeForError() {
+        val animation: Animation = AnimationUtils.loadAnimation(context, R.anim.shake)
+        rvPin.startAnimation(animation)
+    }
+
+    private fun resetAdapter() {
+        Handler().postDelayed({
+            fingerPinAdapter.reset()
+            etPinConfirm.text = null
+        }, 400)
     }
 
 }

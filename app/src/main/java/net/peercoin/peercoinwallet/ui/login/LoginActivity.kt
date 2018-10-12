@@ -20,13 +20,15 @@ import net.peercoin.peercoinwallet.ui.login.pin.PinFragment
 
 class LoginActivity : AppCompatActivity() {
 
+    private var decryptedText: String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_login)
 
         supportFragmentManager.beginTransaction()
-                .setCustomAnimations(R.anim.fade_in,R.anim.fade_out)
+                .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
                 .replace(R.id.flContent, PinFragment.newInstance(), PinFragment.TAG)
                 .addToBackStack(null)
                 .commit()
@@ -48,7 +50,7 @@ class LoginActivity : AppCompatActivity() {
         val decryptor = DeCryptor()
 
         encryptText(encryptor, pass)
-        decryptText(decryptor,encryptor)
+        decryptText(decryptor, encryptor)
 
         Handler().postDelayed({
             if (supportFragmentManager.backStackEntryCount > 0)
@@ -94,13 +96,16 @@ class LoginActivity : AppCompatActivity() {
     private fun encryptText(encryptor: EnCryptor, pass: String) {
         val encryptedText: ByteArray = encryptor.encryptText("AndroidKeyStore", pass)
         Log.d("EncryptComplete", encryptedText.toString())
-
     }
 
     private fun decryptText(decryptor: DeCryptor, encryptor: EnCryptor) {
-        val decryptedText: String = decryptor.decryptData("AndroidKeyStore", encryptor.getEncryption(),
+        this.decryptedText = decryptor.decryptData("AndroidKeyStore", encryptor.getEncryption(),
                 encryptor.getIv())
-        Log.d("DecryptComplete", decryptedText)
+        Log.d("DecryptComplete", this.decryptedText)
+    }
+
+    fun getDecryptedText(): String {
+        return this.decryptedText
     }
 
 }
