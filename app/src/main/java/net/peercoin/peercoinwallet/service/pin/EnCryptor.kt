@@ -12,8 +12,8 @@ class EnCryptor {
     private val TRANSFORMATION: String = "AES/GCM/NoPadding"
     private val ANDROID_KEY_STORE: String = "AndroidKeyStore"
 
-    private var encryption: ByteArray = ByteArray(100)
-    private var ivs: ByteArray = ByteArray(100)
+    private lateinit var encryption: ByteArray
+    private lateinit var ivs: ByteArray
 
     @Throws(UnrecoverableEntryException::class, NoSuchAlgorithmException::class, KeyStoreException::class,
             NoSuchProviderException::class, NoSuchPaddingException::class, InvalidKeyException::class,
@@ -27,7 +27,6 @@ class EnCryptor {
 
         this.encryption = cipher.doFinal(textToEncrypt.toByteArray(charset("UTF-8")))
 
-        Log.d("TAG",this.encryption.toString())
         return this.encryption
     }
 
@@ -36,7 +35,8 @@ class EnCryptor {
                 ANDROID_KEY_STORE)
         val keygenParameterSpec: KeyGenParameterSpec = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             KeyGenParameterSpec.Builder(alias,
-                    KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT).setBlockModes(KeyProperties.BLOCK_MODE_GCM).setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE).build()
+                    KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT).
+                    setBlockModes(KeyProperties.BLOCK_MODE_GCM).setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE).build()
 
         } else {
             TODO("VERSION.SDK_INT < M")

@@ -1,10 +1,18 @@
 package net.peercoin.peercoinwallet.ui.login.fingerprint
 
+import android.app.KeyguardManager
+import android.content.Context
 import android.content.Context.INPUT_METHOD_SERVICE
+import android.hardware.fingerprint.FingerprintManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.security.keystore.KeyGenParameterSpec
+import android.security.keystore.KeyPermanentlyInvalidatedException
+import android.security.keystore.KeyProperties
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,17 +21,27 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_finger.*
 import net.peercoin.peercoinwallet.R
 import net.peercoin.peercoinwallet.helper.EditTextKeyEvent
+import net.peercoin.peercoinwallet.service.fingerprint.FingerAuthenticationHandler
 import net.peercoin.peercoinwallet.ui.login.LoginActivity
 import net.peercoin.peercoinwallet.ui.login.pin.PinFragment
+import java.io.IOException
+import java.security.*
+import java.security.cert.CertificateException
+import javax.crypto.Cipher
+import javax.crypto.KeyGenerator
+import javax.crypto.NoSuchPaddingException
+import javax.crypto.SecretKey
 
 
-class FingerDialogFragment : DialogFragment() {
+@Suppress("DEPRECATION")
+class FingerDialogFragment : DialogFragment(), FingerAuthenticationHandler.FingerInterface {
 
     companion object {
         val TAG: String = FingerDialogFragment::class.java.simpleName
@@ -34,6 +52,16 @@ class FingerDialogFragment : DialogFragment() {
     private lateinit var viewModel: FingerDialogViewModel
     private lateinit var introFadeRunnable: Runnable
     private lateinit var screenShowRunnable: Runnable
+    private val KEY_NAME: String = "FingerKey"
+    private var ANDROID_KEY_STORE: String = "AndroidKeyStore"
+    var FALSE_TAG: String = "FALSE"
+    private lateinit var cipher: Cipher
+    private lateinit var keyStore: KeyStore
+    private lateinit var keyGenerator: KeyGenerator
+    private lateinit var cryptoObject: FingerprintManager.CryptoObject
+    private lateinit var fingerprintManager: FingerprintManager
+    private lateinit var keyguardManager: KeyguardManager
+
     private val handler = Handler()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -54,6 +82,7 @@ class FingerDialogFragment : DialogFragment() {
             handler.removeCallbacks(screenShowRunnable)
             dismiss()
         }
+        createAndCheck()
     }
 
     private fun setupRecyclerView() {
@@ -127,15 +156,18 @@ class FingerDialogFragment : DialogFragment() {
     }
 
     fun completeInput() {
-
-
         handler.postDelayed({
-            val imm = etPinConfirm.context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(etPinConfirm.windowToken, 0)
-            dismiss()
-            (activity as LoginActivity).stepOnePaperKey()
-        }, 300)
+            finishFingerAuth()
+        }, 400)
     }
+
+    private fun finishFingerAuth() {
+        val imm = etPinConfirm.context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(etPinConfirm.windowToken, 0)
+        dismiss()
+        (activity as LoginActivity).stepOnePaperKey()
+    }
+
 
     private fun shakeForError() {
         val animation: Animation = AnimationUtils.loadAnimation(context, R.anim.shake)
@@ -147,6 +179,112 @@ class FingerDialogFragment : DialogFragment() {
             fingerPinAdapter.reset()
             etPinConfirm.text = null
         }, 400)
+    }
+
+    private fun createAndCheck() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            fingerprintManager = activity!!.getSystemService(Context.FINGERPRINT_SERVICE) as FingerprintManager
+            keyguardManager = activity!!.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+
+            if (!this.fingerprintManager.isHardwareDetected) {
+                //Add some alert,device doesn't support fingerprint.
+                Toast.makeText(activity, "Device doesn't support fingerprint", Toast.LENGTH_LONG).show()
+            }
+
+            if (!this.fingerprintManager.hasEnrolledFingerprints()) {
+                //There is no fingerprint on mobile detected
+                Toast.makeText(activity, "No fingerprint on mobile detected,go to Settings", Toast.LENGTH_LONG).show()
+            }
+            if (!this.keyguardManager.isDeviceSecure) {
+                //Device is not locked with pin
+                Toast.makeText(activity, "Device isn't locked with pin", Toast.LENGTH_LONG).show()
+            }
+
+            initializeKey()
+
+            if (initCipher()) {
+                cryptoObject = FingerprintManager.CryptoObject(cipher)
+                val helper = FingerAuthenticationHandler(this) //activity!!-instance of activity which is a context
+                helper.startAuthentication(fingerprintManager, cryptoObject)
+            } else {
+                Log.d(this.FALSE_TAG, "Returned false")
+            }
+
+
+        }
+    }
+
+    private fun initializeKey() {
+        keyStore = KeyStore.getInstance(ANDROID_KEY_STORE)
+        keyStore.load(null)
+        keyGenerator = KeyGenerator
+                .getInstance(KeyProperties.KEY_ALGORITHM_AES, ANDROID_KEY_STORE)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val builder = KeyGenParameterSpec.Builder(KEY_NAME,
+                    KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT)
+                    .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
+                    .setUserAuthenticationRequired(true)
+                    .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
+
+            keyGenerator.init(builder.build())
+            keyGenerator.generateKey()
+        }
+    }
+
+    fun initCipher(): Boolean {
+
+        try {
+            cipher = Cipher.getInstance(KeyProperties.KEY_ALGORITHM_AES + "/"
+                    + KeyProperties.BLOCK_MODE_CBC + "/"
+                    + KeyProperties.ENCRYPTION_PADDING_PKCS7)
+        } catch (e: NoSuchAlgorithmException) {
+            throw RuntimeException("Failed to get Cipher", e)
+        } catch (e: NoSuchPaddingException) {
+            throw RuntimeException("Failed to get Cipher", e)
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            try {
+                keyStore.load(null)
+                val key = keyStore.getKey(KEY_NAME, null) as SecretKey
+                cipher.init(Cipher.ENCRYPT_MODE, key)
+                return true
+            } catch (e: KeyPermanentlyInvalidatedException) {
+                return false
+            } catch (e: KeyStoreException) {
+                throw RuntimeException("Failed to init Cipher", e)
+            } catch (e: CertificateException) {
+                throw RuntimeException("Failed to init Cipher", e)
+            } catch (e: UnrecoverableKeyException) {
+                throw RuntimeException("Failed to init Cipher", e)
+            } catch (e: IOException) {
+                throw RuntimeException("Failed to init Cipher", e)
+            } catch (e: NoSuchAlgorithmException) {
+                throw RuntimeException("Failed to init Cipher", e)
+            } catch (e: InvalidKeyException) {
+                throw RuntimeException("Failed to init Cipher", e)
+            }
+        }
+        return false
+    }
+
+    //Fingerprint authentication area
+    override fun onAuthError(message: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onAuthHelp(message: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onAuthFailed() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onAuthSucceed() {
+        completeInput()
     }
 
 }

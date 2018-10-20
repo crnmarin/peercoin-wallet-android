@@ -1,7 +1,9 @@
 package net.peercoin.peercoinwallet.ui.login
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
+import android.preference.PreferenceManager
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -21,6 +23,7 @@ import net.peercoin.peercoinwallet.ui.login.pin.PinFragment
 class LoginActivity : AppCompatActivity() {
 
     private var decryptedText: String = ""
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +36,7 @@ class LoginActivity : AppCompatActivity() {
                 .addToBackStack(null)
                 .commit()
 
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         ivBack.setOnClickListener { finish() }
     }
 
@@ -78,7 +82,7 @@ class LoginActivity : AppCompatActivity() {
     fun stepOnePaperKey() {
 
         val transaction = supportFragmentManager.beginTransaction()
-        transaction.setCustomAnimations(R.anim.from_left_to_right, R.anim.fade_out)
+        transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
                 .addToBackStack(null)
                 .replace(R.id.flContent, PaperKeyStepOneFragment.newInstance(), PaperKeyStepOneFragment.TAG)
                 .commit()
@@ -102,6 +106,7 @@ class LoginActivity : AppCompatActivity() {
         this.decryptedText = decryptor.decryptData("AndroidKeyStore", encryptor.getEncryption(),
                 encryptor.getIv())
         Log.d("DecryptComplete", this.decryptedText)
+        this.sharedPreferences.edit().putString("KEY PASSWORD", this.decryptedText).apply()
     }
 
     fun getDecryptedText(): String {

@@ -37,7 +37,7 @@ class DeCryptor() {
     fun decryptData(alias : String,encryptedData : ByteArray,encryptionIv : ByteArray) : String{
 
         val cipher : Cipher = Cipher.getInstance(TRANSFORMATION)
-        val spec : GCMParameterSpec = GCMParameterSpec(128,encryptionIv)
+        val spec = GCMParameterSpec(128,encryptionIv)
         cipher.init(Cipher.DECRYPT_MODE,getSecretKey(alias),spec)
 
         val decodedData : ByteArray = cipher.doFinal(encryptedData)
