@@ -23,7 +23,8 @@ class FingerAuthenticationHandler(private var listener: FingerInterface) : Finge
     }
 
     override fun onAuthenticationFailed() {
-        listener.onAuthFailed()
+        val message = "Authentication failed\n"
+        listener.onAuthFailed(message)
     }
 
     override fun onAuthenticationHelp(helpMsgId: Int, helpString: CharSequence) {
@@ -39,7 +40,7 @@ class FingerAuthenticationHandler(private var listener: FingerInterface) : Finge
     interface FingerInterface {
         fun onAuthError(message: String)
         fun onAuthHelp(message: String)
-        fun onAuthFailed()
+        fun onAuthFailed(message: String)
         fun onAuthSucceed()
     }
 

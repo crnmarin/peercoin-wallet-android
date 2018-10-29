@@ -8,7 +8,6 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.FragmentTransaction
 import kotlinx.android.synthetic.main.activity_login.*
 import net.peercoin.peercoinwallet.R
 import net.peercoin.peercoinwallet.service.pin.DeCryptor

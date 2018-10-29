@@ -32,5 +32,7 @@
     <string name="cancel">Cancel</string>
     <string name="enter_pin">Enter PIN</string>
     <string name="use_touch_id">or use Touch ID</string>
-
+    <string name="dev_not_supp">Your device does not support fingerprint</string>
+    <string name="no_enrolled_fp">There are no saved fingerprints on device, go to Settings and setup fingerprint</string>
+    <string name="dev_not_secure">Your device is not locked with pin, please lock your device to use fingerprint</string>
 </resources>

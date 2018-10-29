@@ -3,7 +3,6 @@ package net.peercoin.peercoinwallet.service.pin
 import android.os.Build
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
-import android.util.Log
 import java.io.IOException
 import java.security.*
 import javax.crypto.*
@@ -31,12 +30,12 @@ class EnCryptor {
     }
 
     private fun getSecretKey(alias: String): SecretKey {
-        val keyGenerator: KeyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES,
+        val keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES,
                 ANDROID_KEY_STORE)
         val keygenParameterSpec: KeyGenParameterSpec = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             KeyGenParameterSpec.Builder(alias,
-                    KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT).
-                    setBlockModes(KeyProperties.BLOCK_MODE_GCM).setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE).build()
+                    KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT).setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+                    .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE).build()
 
         } else {
             TODO("VERSION.SDK_INT < M")
